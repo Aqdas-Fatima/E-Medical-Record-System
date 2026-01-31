@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | E-Medical Records</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c7fb8;
+            --primary-dark: #1d5a8a;
+            --secondary: #7fcdbb;
+            --light: #f7f7f7;
+            --dark: #333;
+            --text: #444;
+            --text-light: #777;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
+            --info: #17a2b8;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-role {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--light);
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        table th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(44, 127, 184, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* System Health */
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .health-bar {
+            flex: 1;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .health-progress {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .health-excellent { background: var(--success); }
+        .health-good { background: var(--info); }
+        .health-warning { background: var(--warning); }
+        .health-critical { background: var(--danger); }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-hospital-alt logo-icon"></i>
+                <h1>E-Medical Records</h1>
+            </div>
+            <div class="user-info">
+                <span>Welcome, System Administrator</span>
+                <span class="user-role">Administrator</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" data-tab="users"><i class="fas fa-users"></i> User Management</a></li>
+                <li><a href="#" data-tab="patients"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="#" data-tab="doctors"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="#" data-tab="appointments"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="#" data-tab="records"><i class="fas fa-file-medical"></i> Medical Records</a></li>
+                <li><a href="#" data-tab="settings"><i class="fas fa-cog"></i> System Settings</a></li>
+                <li><a href="#" data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="page-header">
+                    <h2 class="page-title">Admin Dashboard</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="openModal('userModal')"><i class="fas fa-plus"></i> Add User</button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <div class="number">156</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Patients</h3>
+                        <div class="number">892</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Doctors</h3>
+                        <div class="number">47</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Appointments</h3>
+                        <div class="number">23</div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="card">
+                    <h3>System Health</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div>
+                            <h4>Storage Usage</h4>
+                            <div class="health-indicator">
+                                <span>65%</span>
+                                <div class="health-bar">
+                                    <div class="health-progress health-good" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <p>1.3GB of 2GB used</p>
+                        </div>
+                        <div>
+                            <h4>System Performance</h4>
+                            <div class="health-indicator">
+                                <span>95%</span>
+                                <div class="health-bar">
+                                    <div class="health-progress health-excellent" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <p>Excellent performance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <h3>Recent Users</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>sarah@emr.com</td>
+                                <td>Doctor</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button class="btn btn-small btn-info" onclick="editUser('U001')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteUser('U001')">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>John Smith</td>
+                                <td>john@emr.com</td>
+                                <td>Patient</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button class="btn btn-small btn-info" onclick="editUser('U002')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteUser('U002')">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Management Tab -->
+            <div id="users" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">User Management</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="openModal('userModal')"><i class="fas fa-plus"></i> Add User</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="tabs">
+                        <div class="tab active" data-user-tab="all">All Users</div>
+                        <div class="tab" data-user-tab="doctors">Doctors</div>
+                        <div class="tab" data-user-tab="patients">Patients</div>
+                        <div class="tab" data-user-tab="admins">Admins</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>U001</td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>sarah@emr.com</td>
+                                <td>Doctor</td>
+                                <td>Cardiology</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>2024-01-15 09:30</td>
+                                <td>
+                                    <button class="btn btn-small" onclick="viewUser('U001')">View</button>
+                                    <button class="btn btn-small btn-info" onclick="editUser('U001')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteUser('U001')">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>U002</td>
+                                <td>John Smith</td>
+                                <td>john@emr.com</td>
+                                <td>Patient</td>
+                                <td>-</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>2024-01-14 14:20</td>
+                                <td>
+                                    <button class="btn btn-small" onclick="viewUser('U002')">View</button>
+                                    <button class="btn btn-small btn-info" onclick="editUser('U002')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteUser('U002')">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Patients Tab -->
+            <div id="patients" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">Patient Management</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="openModal('patientModal')"><i class="fas fa-plus"></i> Add Patient</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Primary Doctor</th>
+                                <th>Last Visit</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P001</td>
+                                <td>John Smith</td>
+                                <td>45</td>
+                                <td>Male</td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button class="btn btn-small" onclick="viewPatient('P001')">View</button>
+                                    <button class="btn btn-small btn-info" onclick="editPatient('P001')">Edit</button>
+                                    <button class="btn btn-small btn-warning" onclick="transferPatient('P001')">Transfer</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Doctors Tab -->
+            <div id="doctors" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">Doctor Management</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="openModal('doctorModal')"><i class="fas fa-plus"></i> Add Doctor</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Doctor ID</th>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Department</th>
+                                <th>Patients</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>D001</td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>Cardiology</td>
+                                <td>Heart Center</td>
+                                <td>156</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button class="btn btn-small" onclick="viewDoctor('D001')">View</button>
+                                    <button class="btn btn-small btn-info" onclick="editDoctor('D001')">Edit</button>
+                                    <button class="btn btn-small btn-warning" onclick="manageSchedule('D001')">Schedule</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div id="appointments" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">Appointment Management</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="openModal('appointmentModal')"><i class="fas fa-plus"></i> Schedule Appointment</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A001</td>
+                                <td>John Smith</td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>2024-01-16 09:00</td>
+                                <td>Consultation</td>
+                                <td><span class="status-badge status-active">Scheduled</span></td>
+                                <td>
+                                    <button class="btn btn-small" onclick="viewAppointment('A001')">View</button>
+                                    <button class="btn btn-small btn-warning" onclick="rescheduleAppointment('A001')">Reschedule</button>
+                                    <button class="btn btn-small btn-danger" onclick="cancelAppointment('A001')">Cancel</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- System Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">System Settings</h2>
+                </div>
+
+                <div class="card">
+                    <h3>General Settings</h3>
+                    <form id="systemSettings">
+                        <div class="form-group">
+                            <label for="systemName">System Name</label>
+                            <input type="text" class="form-control" id="systemName" value="E-Medical Record System">
+                        </div>
+                        <div class="form-group">
+                            <label for="sessionTimeout">Session Timeout (minutes)</label>
+                            <input type="number" class="form-control" id="sessionTimeout" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="backupFrequency">Backup Frequency</label>
+                            <select class="form-control" id="backupFrequency">
+                                <option value="daily">Daily</option>
+                                <option value="weekly" selected>Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Save Settings</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Security Settings</h3>
+                    <form id="securitySettings">
+                        <div class="form-group">
+                            <label for="passwordPolicy">Password Policy</label>
+                            <select class="form-control" id="passwordPolicy">
+                                <option value="low">Low (6 characters)</option>
+                                <option value="medium" selected>Medium (8 characters with mix)</option>
+                                <option value="high">High (12 characters with complexity)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="twoFactor">Two-Factor Authentication</label>
+                            <select class="form-control" id="twoFactor">
+                                <option value="optional">Optional</option>
+                                <option value="required" selected>Required for all users</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Update Security</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <div class="page-header">
+                    <h2 class="page-title">System Reports</h2>
+                    <div class="header-actions">
+                        <button class="btn" onclick="generateReport()"><i class="fas fa-download"></i> Generate Report</button>
+                    </div>
+                </div>
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Monthly Users</h3>
+                        <div class="number">45</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Appointment Rate</h3>
+                        <div class="number">92%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>System Uptime</h3>
+                        <div class="number">99.8%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Storage Used</h3>
+                        <div class="number">65%</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>User Activity Report</h3>
+                    <div style="height: 300px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin: 20px 0;">
+                        <p style="color: var(--text-light);">User Activity Chart Visualization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 E-Medical Record System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Add User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <span class="close" onclick="closeModal('userModal')">&times;</span>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userRole">User Role</label>
+                    <select class="form-control" id="userRole" required>
+                        <option value="">Select Role</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="patient">Patient</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userName">Full Name</label>
+                    <input type="text" class="form-control" id="userName" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email Address</label>
+                    <input type="email" class="form-control" id="userEmail" placeholder="Enter email address" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" class="form-control" id="userPassword" placeholder="Enter password" required>
+                </div>
+                <div class="form-group" id="doctorFields" style="display: none;">
+                    <label for="userSpecialization">Specialization</label>
+                    <input type="text" class="form-control" id="userSpecialization" placeholder="Enter specialization">
+                </div>
+                <div class="form-group" id="doctorDeptFields" style="display: none;">
+                    <label for="userDepartment">Department</label>
+                    <input type="text" class="form-control" id="userDepartment" placeholder="Enter department">
+                </div>
+                <button type="submit" class="btn">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        document.querySelectorAll('.sidebar-menu a').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active tab
+                document.querySelectorAll('.sidebar-menu a').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // User Management Tabs
+        document.querySelectorAll('[data-user-tab]').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('[data-user-tab]').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // In real app, filter users based on tab
+            });
+        });
+
+        // Role-based form fields
+        document.getElementById('userRole').addEventListener('change', function() {
+            const role = this.value;
+            const doctorFields = document.getElementById('doctorFields');
+            const doctorDeptFields = document.getElementById('doctorDeptFields');
+            
+            if (role === 'doctor') {
+                doctorFields.style.display = 'block';
+                doctorDeptFields.style.display = 'block';
+            } else {
+                doctorFields.style.display = 'none';
+                doctorDeptFields.style.display = 'none';
+            }
+        });
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Form Submissions
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('User created successfully!');
+            closeModal('userModal');
+            this.reset();
+        });
+
+        document.getElementById('systemSettings').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('System settings updated successfully!');
+        });
+
+        document.getElementById('securitySettings').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Security settings updated successfully!');
+        });
+
+        // Action Functions
+        function viewUser(userId) {
+            alert(`Viewing user ${userId}`);
+            // In real app, show user details
+        }
+
+        function editUser(userId) {
+            alert(`Editing user ${userId}`);
+            // In real app, open edit form
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                alert(`User ${userId} deleted successfully`);
+                // In real app, delete user from database
+            }
+        }
+
+        function viewPatient(patientId) {
+            alert(`Viewing patient ${patientId}`);
+            // In real app, show patient details
+        }
+
+        function editPatient(patientId) {
+            alert(`Editing patient ${patientId}`);
+            // In real app, open edit form
+        }
+
+        function transferPatient(patientId) {
+            alert(`Transferring patient ${patientId}`);
+            // In real app, open transfer form
+        }
+
+        function viewDoctor(doctorId) {
+            alert(`Viewing doctor ${doctorId}`);
+            // In real app, show doctor details
+        }
+
+        function editDoctor(doctorId) {
+            alert(`Editing doctor ${doctorId}`);
+            // In real app, open edit form
+        }
+
+        function manageSchedule(doctorId) {
+            alert(`Managing schedule for doctor ${doctorId}`);
+            // In real app, open schedule management
+        }
+
+        function viewAppointment(appointmentId) {
+            alert(`Viewing appointment ${appointmentId}`);
+            // In real app, show appointment details
+        }
+
+        function rescheduleAppointment(appointmentId) {
+            alert(`Rescheduling appointment ${appointmentId}`);
+            // In real app, open reschedule form
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                alert(`Appointment ${appointmentId} cancelled`);
+                // In real app, cancel appointment
+            }
+        }
+
+        function generateReport() {
+            alert('Generating system report...');
+            // In real app, generate and download report
+        }
+        function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // In a real application, you would clear session/tokens here
+        // For demo purposes, redirect to login page
+        window.location.href = 'login.html';
+    }
+}
+    </script>
+</body>
+</html>

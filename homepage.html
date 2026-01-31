@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Medical Record System | Secure Digital Healthcare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c7fb8;
+            --primary-dark: #1d5a8a;
+            --secondary: #7fcdbb;
+            --accent: #edf8b1;
+            --light: #f7f7f7;
+            --dark: #333;
+            --text: #444;
+            --text-light: #777;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: white;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+    background: linear-gradient(135deg, rgba(69, 163, 226, 0.85) 0%, rgba(61, 141, 194, 0.9) 100%), 
+                url('data:image/jpeg;base64,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');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Creates a nice parallax effect */
+    color: white;
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: var(--light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: var(--light);
+        }
+
+        .contact-container {
+            display: flex;
+            gap: 50px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-info h3 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            margin-bottom: 30px;
+        }
+
+        .contact-details {
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .contact-icon {
+            font-size: 20px;
+            color: var(--primary);
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+
+        .contact-form {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(44, 127, 184, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .footer-section p {
+            margin-bottom: 15px;
+            color: #bbb;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .about-content, .contact-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .section-title h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-hospital-alt logo-icon"></i>
+                <h1>E-Medical Records</h1>
+            </div>
+            <nav> 
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="login.html" class="btn">Login</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Secure Digital Healthcare Management</h2>
+                <p>Transform your medical practice with our comprehensive E-Medical Record System. Streamline patient care, enhance security, and improve efficiency.</p>
+                <div class="hero-buttons">
+                    <a href="login.html" class="btn">Get Started</a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Key Features</h2>
+                <p>Our E-Medical Record System offers a comprehensive suite of tools to modernize healthcare management</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h3>Secure Data Storage</h3>
+                    <p>Advanced encryption and security protocols to protect sensitive patient information with HIPAA compliance.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-md feature-icon"></i>
+                    <h3>Role-Based Access</h3>
+                    <p>Customized dashboards and permissions for administrators, doctors, and patients with appropriate access levels.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check feature-icon"></i>
+                    <h3>Appointment Management</h3>
+                    <p>Streamlined scheduling, reminders, and management of patient appointments with automated notifications.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-medical feature-icon"></i>
+                    <h3>Digital Prescriptions</h3>
+                    <p>Create, manage, and track electronic prescriptions with built-in drug interaction checks and pharmacy integration.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3>Analytics & Reporting</h3>
+                    <p>Comprehensive reporting tools and analytics to track patient outcomes and practice performance metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <h3>Mobile Accessibility</h3>
+                    <p>Access patient records and manage your practice from any device with our responsive, mobile-friendly interface.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Us</h2>
+                <p>Learn more about our mission to revolutionize healthcare through technology</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Transforming Healthcare Through Innovation</h3>
+                    <p>Founded with a vision to modernize medical record keeping, our E-Medical Record System replaces outdated paper-based systems with a secure, efficient digital platform.</p>
+                    <p>Our team of healthcare professionals and technology experts has developed a comprehensive solution that addresses the unique challenges faced by medical practices of all sizes.</p>
+                    <p>We are committed to improving patient care through technology that enhances communication, reduces errors, and streamlines administrative tasks.</p>
+                    <a href="#contact" class="btn" style="margin-top: 20px;">Contact Us</a>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Medical Team">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Get in touch with our team to learn more about our E-Medical Record System</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <p>Have questions about our E-Medical Record System? Our team is here to help you transform your healthcare practice.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
+                            <div>
+                                <h4>Our Location</h4>
+                                <p>123 Healthcare Avenue, Medical District, City 10001</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone contact-icon"></i>
+                            <div>
+                                <h4>Phone Number</h4>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope contact-icon"></i>
+                            <div>
+                                <h4>Email Address</h4>
+                                <p>info@emedicalrecords.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-Medical Records</h3>
+                    <p>A secure and efficient digital platform for managing patient health information and streamlining healthcare operations.</p>
+                    <p>Committed to improving patient care through innovative technology solutions.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Patient Records</a></li>
+                        <li><a href="#">Appointment Scheduling</a></li>
+                        <li><a href="#">Digital Prescriptions</a></li>
+                        <li><a href="#">Lab Reports</a></li>
+                        <li><a href="#">Medical Analytics</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 E-Medical Record System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav ul').style.display = 
+                document.querySelector('nav ul').style.display === 'flex' ? 'none' : 'flex';
+        });
+        
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if(window.innerWidth <= 768) {
+                        document.querySelector('nav ul').style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
